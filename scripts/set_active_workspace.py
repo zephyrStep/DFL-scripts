@@ -7,6 +7,7 @@ from config.settings import get_config
 from scripts import get_scripts_root
 
 SET_SPACE_FILENAME = 'set_workspace.bat'
+SET_ENV_FILENAME = 'setenv.bat'
 
 def get_workspace_choices() -> List[Path]:
     config = get_config()
@@ -16,18 +17,25 @@ def get_workspace_choices() -> List[Path]:
     return [space for space in workspaces if space.is_dir()]
 
 
-def get_batch_file_location() -> Path:
+def get_workspace_batch_file_location() -> Path:
     config = get_config()
 
     internal = config.INTERNAL_PATH
 
     return internal / SET_SPACE_FILENAME
 
+def get_dfl_setenv_batch_file() -> Path:
+    config = get_config()
+
+    internal = config.INTERNAL_PATH
+
+    return internal / SET_ENV_FILENAME
+
 
 def set_workspace(choice):
     config = get_config()
 
-    batch_file = get_batch_file_location()
+    batch_file = get_workspace_batch_file_location()
 
     relative_path = config.WORKSPACES_BASE / choice
     scripts_dir = get_scripts_root()
