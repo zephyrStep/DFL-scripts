@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 
 from config.settings import get_config
+from scripts import get_scripts_root
 
 SET_SPACE_FILENAME = 'set_workspace.bat'
 
@@ -29,8 +30,15 @@ def set_workspace(choice):
     batch_file = get_batch_file_location()
 
     relative_path = config.WORKSPACES_BASE / choice
+    scripts_dir = get_scripts_root()
+
+    workspace_env = f"SET WORKSPACE={relative_path}{os.sep}"
+    scripts_env = f"SET WORKSPACE_SCRIPTS={scripts_dir}{os.sep}"
+
     with open(batch_file, 'w') as file:
-        file.write(f"SET WORKSPACE={relative_path}{os.sep}")
+        file.write(workspace_env)
+        file.write(os.linesep)
+        file.write(scripts_env)
 
 
 def parse_workspace_choice():

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from create_new_workspace import makedir_iterable_structure
+from scripts.create_new_workspace import makedir_iterable_structure
 
 
 def test_recur_mkdir_on_regular_structure(mock_config, tmpdir):

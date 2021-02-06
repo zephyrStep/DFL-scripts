@@ -1,4 +1,4 @@
-from create_new_workspace import get_base_workspaces_path
+from scripts.create_new_workspace import get_base_workspaces_path
 
 
 def test_get_workspaces_base_returns_cfg_value(mock_config):

@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from config.settings import get_config
-from set_active_workspace import get_batch_file_location
+from scripts.set_active_workspace import get_batch_file_location
 
 
 def test_command_sets_env():

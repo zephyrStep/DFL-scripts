@@ -2,8 +2,8 @@ from pathlib import Path
 
 from unittest.mock import Mock, call
 
-import set_active_workspace
-from set_active_workspace import set_workspace, get_batch_file_location
+from scripts import set_active_workspace
+from scripts.set_active_workspace import set_workspace, get_batch_file_location
 
 
 def test_expected_file_contents_are_written(patch_open, mock_config, monkeypatch):
@@ -17,5 +17,5 @@ def test_expected_file_contents_are_written(patch_open, mock_config, monkeypatch
     set_workspace(target)
     file_mock = patch_open.file
 
-    assert file_mock.write.call_args == call(expected)
+    assert file_mock.write.call_args_list[0] == call(expected)
 
