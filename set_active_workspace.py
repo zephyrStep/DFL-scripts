@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import List
 
-from config import get_config
+from config.settings import get_config
 
 SET_SPACE_FILENAME = 'set_workspace.bat'
 

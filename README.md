@@ -5,8 +5,7 @@ Goal: to allow management of multiple workspaces with the existing DFL batch scr
 
 
 ### Config
-Create a file called `config.ini` inside the main directory and set the base directory you will use as a workspace, 
-and also the DFL `_internal` folder location.
+Create a file called `config.ini` inside the config directory (same level as settings.py).
 
 For example this is my .ini setup
 ```ini

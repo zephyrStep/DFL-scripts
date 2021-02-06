@@ -3,9 +3,8 @@ from unittest.mock import Mock
 
 import pytest
 
-import config
-from config import Config
-from config import get_config
+import config.settings as settings
+from config.settings import Config, get_config, load_config
 
 
 
@@ -31,8 +30,8 @@ def patch_open(monkeypatch):
 def mock_config(monkeypatch):
     """Patch get_config and return the mock it returns."""
     mock = Mock()
-    monkeypatch.setattr(config, Config.__name__, Mock(return_value=mock))
-    monkeypatch.setattr(config, config.load_config.__name__, Mock(return_value=mock))
+    monkeypatch.setattr(settings, Config.__name__, Mock(return_value=mock))
+    monkeypatch.setattr(settings, load_config.__name__, Mock(return_value=mock))
 
     cfg = get_config()
 

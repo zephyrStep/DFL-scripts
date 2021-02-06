@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from config import get_config
+from config.settings import get_config
 from set_active_workspace import get_batch_file_location
 
 
