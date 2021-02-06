@@ -1,9 +1,9 @@
 import argparse
-import os
 import sys
 from pathlib import Path
+from typing import Union
 
-from config import get_config
+from config.settings import get_config
 
 DATA_SRC = 'data_src'
 DATA_DST = 'data_dst'
@@ -13,6 +13,7 @@ ALIGNED_DEBUG = 'aligned_debug'
 ALIGNED_CONVERT = 'aligned_convert'
 
 def get_workspace_structure():
+    """Create a workspace directory structure template"""
     return {
         DATA_SRC: [ALIGNED],
         DATA_DST: [ALIGNED_CONVERT, ALIGNED_DEBUG, ALIGNED]
@@ -75,8 +76,27 @@ def create_workspace(workspace_name):
         for folder in sub_folders:
             (new_workspace / top_level_key / folder).mkdir()
 
-    print('Project structure created')
+def makedir_iterable_structure(structure: Union[dict, list], current_base):
+    """Take an iterable structure and produce directories from it"""
+    if structure:
+        for top_level_key in structure:
+            recur_mkdir(structure, top_level_key, current_base)
 
+def recur_mkdir(structure: Union[dict, list, str], current_entry, current_base: Path):
+    """Recursively traverse the template structure and create directories"""
+
+    if current_entry and isinstance(current_entry, str):
+        current_base /= current_entry
+        current_base.mkdir()
+    else:
+        return makedir_iterable_structure(current_entry, current_base)
+
+    if isinstance(structure, dict):
+        next_structure = structure.get(current_entry)
+        if isinstance(next_structure, (list, dict)):
+            return makedir_iterable_structure(next_structure, current_base)
+        else:
+            return recur_mkdir([], next_structure, current_base)
 
 
 if __name__ == '__main__':

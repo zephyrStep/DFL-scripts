@@ -1,4 +1,5 @@
 import builtins
+from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
@@ -36,3 +37,10 @@ def mock_config(monkeypatch):
     cfg = get_config()
 
     return cfg
+
+@pytest.fixture
+def patch_path_mkdir(monkeypatch):
+    mkdir_mock = Mock()
+    monkeypatch.setattr(Path, 'mkdir', Mock(return_value=mkdir_mock))
+
+    return mkdir_mock
