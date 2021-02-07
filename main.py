@@ -30,13 +30,15 @@ p.set_defaults(func=run_choose_workspace)
 
 
 def run_move_landmark_debug(args):
-    rename_debug_images.run(source=args.source,
-                            dest=args.dest,
+    rename_debug_images.run(img_base=args.img_base,
+                            aligned_dir=args.source,
+                            debug_dir=args.dest,
                             rename=args.rename,
                             test=args.test)
 
 
 p = subparsers.add_parser('move_landmark_debug', help="Move landmark debug images from source to dest")
+p.add_argument('-i', '--image-base', required=True, action=FixPathAction, dest='img_base')
 p.add_argument('-s', '--source', required=True, action=FixPathAction, dest='source')
 p.add_argument('-d', '--dest', required=True, action=FixPathAction, dest='dest')
 p.add_argument('-r', '--rename-off', dest='rename', action='store_false',
