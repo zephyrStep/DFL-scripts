@@ -6,7 +6,7 @@ from typing import List
 from config.internal_settings import get_internal_settings
 from config.settings import get_config
 from utils.paths import get_project_root
-
+from utils.prompts import prompt_choice
 
 logger = logging.getLogger('main')
 
@@ -60,15 +60,17 @@ def set_workspace(choice):
     logger.info(f"Current workspace changed to: {choice}")
 
 
-def choose_workspace(choice=None):
+def choose_workspace(show_workspace):
     settings = get_internal_settings()
+    if show_workspace:
+        logger.info(f"Current workspace: {settings.current_workspace}")
+        return
+
     choices = list(map(lambda path: path.stem, get_workspace_choices()))
 
     logger.info(f"Current Workspace: {settings.current_workspace}")
-    while not choice:
-        choice = input(f"Choose a workspace: {choices}>")
-        if choice not in choices:
-            choice = None
+
+    choice = prompt_choice("Select a workspace", choices)
 
     set_workspace(choice)
 

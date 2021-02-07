@@ -1,20 +1,17 @@
 import argparse
+import logging
 from pathlib import Path
 import re
 
-IMAGE_EXT = ['jpg','png']
+from utils.prompts import prompt_agree
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Rename files in the target directory to remove extra prefixes/suffixes leaving only the numeric portion')
+IMAGE_EXT = ['jpg', 'png']
 
-    parser.add_argument('debug_folder', help='Path to debug folder')
+logger = logging.getLogger('main')
 
-    args = parser.parse_args()
-
-    return args
 
 def choose_segment(parts: list):
-    """Return a purely numeric filename for aligned_debug
+    """Get the image number from a debug image"
 
     Split a filename at each _ pick a purely numeric segment to use as the name. If none are purely numeric,
     use the entire name but replace all non-numeric characters.
@@ -30,16 +27,27 @@ def choose_segment(parts: list):
     return chosen
 
 
-def run(args):
-    target = Path(args.debug_folder)
-    print(f'target path: {target}')
-    assert target.is_dir()
+def move_landmark_debug_images(source: Path, dest: Path, rename=True, test=True):
+    """Moves all debug images from an _aligned folder into its corresponding aligned_debug folder
 
-    for file in target.iterdir():
-        if file.suffix[1:] in IMAGE_EXT:
-            new_stem = choose_segment(file.stem.split('_'))
+    :param source: Input directory containing landmark _debug images mixed with regular aligned
+    :param dest: Folder to move the debug images to
+    """
+    assert source.is_dir()
 
-            new_path = Path(file).parent / (new_stem + file.suffix)
+    logger.info(f'Moving debug images in {source} to {dest}')
+    for file in source.iterdir():
+        if 'debug' in file.stem and file.suffix[1:] in IMAGE_EXT:
+            if rename:
+                new_stem = choose_segment(file.stem.split('_'))
+            else:
+                new_stem = file.stem
+
+            new_path = dest / (new_stem + file.suffix)
+
+            if test:
+                logger.info(f'old: {file} new: {new_path}')
+                continue
 
             try:
                 file.rename(new_path)
@@ -48,5 +56,11 @@ def run(args):
                 file.unlink()
 
 
-if __name__ == '__main__':
-    run(parse_args())
+def run(source: Path, dest: Path, rename: bool, test: bool):
+    logger.info(f"This will move all debug images in: {source}")
+    logger.info(f"Into {dest}")
+    logger.info(f"Files will be renamed: {rename}")
+
+    if prompt_agree("Is this correct?"):
+        move_landmark_debug_images(source, dest, rename, test)
+
