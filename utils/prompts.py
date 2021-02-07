@@ -9,7 +9,7 @@ def prompt_choice(prompt_text: str, choices: list):
     return choice
 
 
-def prompt_agree(prompt_text: str) -> bool:
+def prompt_confirm(prompt_text: str) -> bool:
 
     choice = input(f'{prompt_text}: (Y|N)')
 

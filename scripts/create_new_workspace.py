@@ -11,17 +11,21 @@ DATA_DST = 'data_dst'
 ALIGNED = 'aligned'
 ALIGNED_DEBUG = 'aligned_debug'
 ALIGNED_CONVERT = 'aligned_convert'
+MANUAL_EXTRACT = 'manual_extract'
+
 
 def get_workspace_structure():
     """Create a workspace directory structure template"""
     return {
         DATA_SRC: [ALIGNED],
-        DATA_DST: [ALIGNED_CONVERT, ALIGNED_DEBUG, ALIGNED]
+        DATA_DST: [ALIGNED_CONVERT, ALIGNED_DEBUG, ALIGNED, MANUAL_EXTRACT]
     }
+
 
 def get_base_workspaces_path() -> Path:
     config = get_config()
     return config.WORKSPACES_BASE
+
 
 def clear_directory(target: Path):
     # don't try to delete root!
@@ -76,11 +80,13 @@ def create_workspace(workspace_name):
         for folder in sub_folders:
             (new_workspace / top_level_key / folder).mkdir()
 
+
 def makedir_iterable_structure(structure: Union[dict, list], current_base):
     """Take an iterable structure and produce directories from it"""
     if structure:
         for top_level_key in structure:
             recur_mkdir(structure, top_level_key, current_base)
+
 
 def recur_mkdir(structure: Union[dict, list, str], current_entry, current_base: Path):
     """Recursively traverse the template structure and create directories"""

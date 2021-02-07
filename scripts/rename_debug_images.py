@@ -4,7 +4,7 @@ import shutil
 from pathlib import Path
 import re
 
-from utils.prompts import prompt_agree
+from utils.prompts import prompt_confirm
 
 IMAGE_EXT = ['jpg', 'png']
 
@@ -60,10 +60,11 @@ def move_landmark_debug_images(source: Path, dest: Path, rename=True, test=True)
 def copy_missing_base_images_into_debug(base_image_dir: Path, debug_dir: Path):
     debug_images_names = {img.stem for img in filter(lambda file: file.suffix[1:] in IMAGE_EXT, debug_dir.iterdir())}
     logger.info(f'{len(debug_images_names)} debug images found')
+
     base_image_paths = [img for img in filter(lambda file: file.suffix[1:] in IMAGE_EXT, base_image_dir.iterdir())]
     logger.info(f'{len(base_image_paths)} base images found')
-    logger.info(f'Finding missing images')
 
+    logger.info(f'Finding missing images')
     missing = []
     for img in base_image_paths:
         if img.stem not in debug_images_names:
@@ -80,7 +81,7 @@ def run(img_base: Path, aligned_dir: Path, debug_dir: Path, rename: bool, test: 
     logger.info(f"Into {debug_dir}")
     logger.info(f"Files will be renamed: {rename}")
 
-    if prompt_agree("Is this correct?"):
+    if prompt_confirm("Is this correct?"):
         move_landmark_debug_images(aligned_dir, debug_dir, rename, test)
         copy_missing_base_images_into_debug(base_image_dir=img_base, debug_dir=debug_dir)
 
