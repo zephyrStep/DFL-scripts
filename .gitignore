@@ -2,3 +2,4 @@
 .pytest_cache/*
 config/config.ini
 init_completed
+*.log

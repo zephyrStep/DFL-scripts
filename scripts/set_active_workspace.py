@@ -1,13 +1,18 @@
-import argparse
+import logging
 import os
 from pathlib import Path
 from typing import List
 
+from config.internal_settings import get_internal_settings
 from config.settings import get_config
-from scripts import get_scripts_root
+from utils.paths import get_project_root
+
+
+logger = logging.getLogger('main')
 
 SET_SPACE_FILENAME = 'set_workspace.bat'
 SET_ENV_FILENAME = 'setenv.bat'
+
 
 def get_workspace_choices() -> List[Path]:
     config = get_config()
@@ -24,6 +29,7 @@ def get_workspace_batch_file_location() -> Path:
 
     return internal / SET_SPACE_FILENAME
 
+
 def get_dfl_setenv_batch_file() -> Path:
     config = get_config()
 
@@ -34,35 +40,38 @@ def get_dfl_setenv_batch_file() -> Path:
 
 def set_workspace(choice):
     config = get_config()
+    settings = get_internal_settings()
 
     batch_file = get_workspace_batch_file_location()
 
     relative_path = config.WORKSPACES_BASE / choice
-    scripts_dir = get_scripts_root()
+    scripts_dir = get_project_root()
 
-    workspace_env = f"SET WORKSPACE={relative_path}{os.sep}"
-    scripts_env = f"SET WORKSPACE_SCRIPTS={scripts_dir}{os.sep}"
+    workspace_env = f"SET {settings.dfl_workspace_key}={relative_path}"
+    scripts_env = f"SET {settings.scripts_env_key}={str(scripts_dir)}"
 
     with open(batch_file, 'w') as file:
         file.write(workspace_env)
         file.write(os.linesep)
         file.write(scripts_env)
 
+    internal_settings = get_internal_settings()
+    internal_settings.current_workspace = choice
+    logger.info(f"Current workspace changed to: {choice}")
 
-def parse_workspace_choice():
-    parser = argparse.ArgumentParser("Set the current workspace for use by the DFL batch scripts")
 
+def choose_workspace(choice=None):
+    settings = get_internal_settings()
     choices = list(map(lambda path: path.stem, get_workspace_choices()))
-    parser.add_argument('workspace', choices=choices)
 
-    args = parser.parse_args()
+    logger.info(f"Current Workspace: {settings.current_workspace}")
+    while not choice:
+        choice = input(f"Choose a workspace: {choices}>")
+        if choice not in choices:
+            choice = None
 
-    return args.workspace
-
-
-def run():
-    choice = parse_workspace_choice()
     set_workspace(choice)
 
+
 if __name__ == '__main__':
-    run()
+    choose_workspace('you_and_riley')
